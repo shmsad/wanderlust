@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import Elements from "./Elements.jsx";
 import { ToastContainer } from "react-toastify";
-import AuthState from "./contextapi/authcontext/Authstate.jsx";
+import AuthState from "./contextapi/authcontext/AuthState.jsx";
 import ListState from "./contextapi/listcontext/ListState.jsx";
 
 createRoot(document.getElementById("root")).render(
