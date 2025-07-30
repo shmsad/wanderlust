@@ -7,17 +7,23 @@ import { idID } from "@mui/material/locale";
 function ListState({ children }) {
   const [allList, setAllList] = useState([]);
 
-  const addListFun = async (list, setListing) => {
-    const token = localStorage.getItem("token");
+  const addListFun = async (list, image, setListing) => {
+    let formdata = new FormData();
+
+    formdata.append("title", list.title);
+    formdata.append("description", list.description);
+    formdata.append("price", list.price);
+    formdata.append("location", list.location);
+    formdata.append("country", list.country);
+    formdata.append("image", image);
 
     try {
       const response = await fetch(`${baseUrls}/api/v3.2/post/addlist`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          "auth-token": token,
+          "auth-token": localStorage.getItem("token"),
         },
-        body: JSON.stringify(list),
+        body: formdata,
       });
       const data = await response.json();
       console.log(data);
@@ -34,9 +40,41 @@ function ListState({ children }) {
         errorEmitter(data.message);
       }
     } catch (error) {
-      errorEmitter("internal server error", error);
+      errorEmitter("internal server error");
     }
   };
+
+
+  // const addListFun = async (list, setListing) => {
+  //   const token = localStorage.getItem("token");
+
+  //   try {
+  //     const response = await fetch(`${baseUrls}/api/v3.2/post/addlist`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "auth-token": token,
+  //       },
+  //       body: JSON.stringify(list),
+  //     });
+  //     const data = await response.json();
+  //     console.log(data);
+  //     if (data.success) {
+  //       successEmitter(data.message);
+  //       setListing({
+  //         title: "",
+  //         description: "",
+  //         price: "",
+  //         location: "",
+  //         country: "",
+  //       });
+  //     } else {
+  //       errorEmitter(data.message);
+  //     }
+  //   } catch (error) {
+  //     errorEmitter("internal server error", error);
+  //   }
+  // };
 
   const getAllList = async () => {
     const response = await fetch(`${baseUrls}/api/v3.2/post/alllist`);
@@ -133,7 +171,7 @@ function ListState({ children }) {
         },
       });
       const data = await response.json();
-      if(data.success){
+      if (data.success) {
         getAllList()
       }
     } catch (error) {

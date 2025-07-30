@@ -1,19 +1,34 @@
 const express = require('express');
 const isVerifyUser = require('../middleware/isVerifyUser');
 const router = express.Router();
-const ListingModel = require('../schema/listing.model')
+const ListingModel = require('../schema/listing.model');
+//import uploads from multer
+const uploads = require("../middleware/multer");
+const uploadOnCloudinary = require("../cloudinary/uploadOnCloudinary");
 
-router.post('/addlist', isVerifyUser, async (req, res) => {
-  console.log(req.body);
+router.post('/addlist', isVerifyUser, uploads.single("image"), async (req, res) => {
+  // console.log(req.body);
+  console.log(req.file);
+
   const { title, description, price, location, country } = req.body;
   console.log(req.user);
   try {
+    let imageUrl = await uploadOnCloudinary(req.file.path);
+    console.log(req.user);
+    if(!imageUrl){
+      return res.status(400).json({
+        success:false,
+        message:"please upload an image.",
+      });
+    }
     const list = await ListingModel.create({
       title,
       description,
       price,
       location,
       country,
+      // image: req.file.path,
+      image: imageUrl,
       createdby: req.user,
     });
     res.status(200).json({

@@ -14,12 +14,14 @@ function AddListing() {
     country: "",
   });
 
+  const [image, setImage] = useState(null);
+
   const changeChandler = (e) => {
     setListing({ ...listing, [e.target.name]: e.target.value });
   };
   const submitHandler = async (e) => {
     e.preventDefault();
-    addListFun(listing, setListing)
+    addListFun(listing, image, setListing)
     
   };
 
@@ -84,6 +86,10 @@ function AddListing() {
                   name="image"
                   type="file"
                   id="image"
+                  required
+                  onChange={(e) => {
+                    setImage(e.target.files[0]);
+                  }}
                 />
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
